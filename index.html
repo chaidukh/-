@@ -104,19 +104,286 @@
     opacity: 1;
     transform: translate(-50%, 0);
   }
+   /* ===== Меню ===== */
+  #menu {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.2rem 1rem;
+    background: linear-gradient(to bottom, rgba(13,11,14,0.95), rgba(13,11,14,0));
+    z-index: 50;
+  }
+  #menu button {
+    background: none;
+    border: none;
+    color: var(--dim);
+    font-family: inherit;
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.3rem 0;
+    transition: color 0.4s ease;
+  }
+  #menu button:hover { color: var(--ink); }
+  #menu button.active { color: var(--accent); }
+
+  /* ===== Переключение разделов ===== */
+  .tab { display: none; }
+  .tab.active { display: block; animation: fadeTab 0.7s ease; }
+  @keyframes fadeTab {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Карточки персонажей ===== */
+  .dossier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+  .dossier-card {
+    background: #141016;
+    border: 1px solid #241c26;
+    color: var(--ink);
+    font-family: inherit;
+    text-align: left;
+    padding: 1.4rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .dossier-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(139,30,45,0.15);
+  }
+  .card-name { font-size: 1rem; letter-spacing: 0.05em; }
+  .card-hint {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+
+  /* ===== Ссылки ===== */
+  .links-list { list-style: none; margin-top: 2rem; }
+  .links-list li { margin-bottom: 1rem; }
+  .links-list a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+    font-size: 1.05rem;
+  }
+  .links-list a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ===== Модалка досье ===== */
+  #dossier-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,4,6,0.9);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 200;
+  }
+  #dossier-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .dossier-sheet {
+    position: relative;
+    background: #1a141b;
+    border: 1px solid #2c212e;
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 2rem;
+    transform: scale(0.96);
+    transition: transform 0.5s ease;
+  }
+  #dossier-modal.show .dossier-sheet {
+    transform: scale(1);
+  }
+
+  /* Портрет — сначала появляется маленьким */
+  .dossier-portrait {
+    align-self: start;
+  }
+  .dossier-portrait img {
+    width: 100%;
+    display: block;
+    filter: grayscale(30%) contrast(1.05);
+    border: 1px solid #2c212e;
+    opacity: 0;
+    transform: scale(0.6);
+    animation: portraitReveal 0.9s ease 0.2s forwards;
+  }
+  @keyframes portraitReveal {
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* Бланк — фон проявляется позже портрета */
+  .dossier-body {
+    position: relative;
+    padding: 1rem 1rem 1rem 0;
+  }
+  .dossier-body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(to bottom, transparent 0 1.9em, #2c212e 1.9em calc(1.9em + 1px));
+    opacity: 0;
+    animation: sheetReveal 1.2s ease 0.6s forwards;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes sheetReveal {
+    to { opacity: 0.35; }
+  }
+  .dossier-stamp,
+  .dossier-body h2,
+  .dossier-text {
+    position: relative;
+    z-index: 1;
+  }
+  .dossier-stamp {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.7s forwards;
+  }
+  .dossier-body h2 {
+    font-size: 1.3rem;
+    font-weight: normal;
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.85s forwards;
+  }
+  .dossier-text {
+    font-size: 0.98rem;
+    line-height: 2;
+    white-space: pre-line;
+    color: var(--ink);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #dossier-close {
+    position: absolute;
+    top: 0.6rem; right: 0.9rem;
+    background: none; border: none;
+    color: var(--dim);
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    z-index: 2;
+  }
+  #dossier-close:hover { color: var(--accent); }
+
+  /* Адаптив */
+  @media (max-width: 620px) {
+    #menu { gap: 1rem; }
+    #menu button { font-size: 0.7rem; letter-spacing: 0.15em; }
+    .dossier-sheet {
+      grid-template-columns: 1fr;
+      padding: 1.5rem;
+    }
+    .dossier-portrait { max-width: 140px; }
+  }
 </style>
 </head>
 <body>
 
 <main>
-  <h1>добро пожаловать,дорогой читатель</h1>
-  <div class="chapter">
-    готов ли ты узнать об этой истории?...
-    бябябя <span class="secret" data-secret="а еще бябябя.">бимбимбим</span> бибибим.
+ <nav id="menu">
+  <button data-tab="characters">Персонажи</button>
+  <button data-tab="chapters" class="active">Главы</button>
+  <button data-tab="links">Ссылки</button>
+</nav>
 
-    если так... рад знакомству :)
-    А <span class="secret" data-secret="ну тут короче это бля.">здесь</span> то бля
+<main>
+  <!-- ===== ГЛАВЫ ===== -->
+<section id="chapters" class="tab active">
+  <h1>Главы</h1>
+  <div id="chapters-container"></div>
+</section>
+
+  <!-- ===== ПЕРСОНАЖИ ===== -->
+  <section id="characters" class="tab">
+    <h1>Персонажи</h1>
+    <div class="dossier-grid">
+      <!-- Карточка персонажа. Меняй имя, портрет и текст досье -->
+      <button class="dossier-card"
+              data-name="Имя Персонажа"
+              data-portrait="char1.jpg"
+              data-file="ДОСЬЕ №001">
+        <span class="card-name">Имя Персонажа</span>
+        <span class="card-hint">досье</span>
+      </button>
+
+      <button class="dossier-card"
+              data-name="Второй"
+              data-portrait="char2.jpg"
+              data-file="ДОСЬЕ №002">
+        <span class="card-name">Второй</span>
+        <span class="card-hint">досье</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== ССЫЛКИ ===== -->
+  <section id="links" class="tab">
+    <h1>Ссылки</h1>
+    <ul class="links-list">
+      <li><a href="https://t.me/твой_канал" target="_blank" rel="noopener">Telegram</a></li>
+      <li><a href="https://твой.сайт" target="_blank" rel="noopener">Другой ресурс</a></li>
+      <!-- добавляй свои -->
+    </ul>
+  </section>
+</main>
+
+<!-- ===== МОДАЛКА ДОСЬЕ ===== -->
+<div id="dossier-modal">
+  <div class="dossier-sheet">
+    <div class="dossier-portrait">
+      <img id="dossier-img" src="" alt="">
+    </div>
+    <div class="dossier-body">
+      <div class="dossier-stamp" id="dossier-file"></div>
+      <h2 id="dossier-name"></h2>
+      <div class="dossier-text" id="dossier-text"></div>
+    </div>
+    <button id="dossier-close" aria-label="закрыть">×</button>
   </div>
+</div>
 </main>
 
 <div id="secret-box"></div>
@@ -125,7 +392,8 @@
   <img src="rose.png" alt="">
 </div>
 <script>
-  // Прелоадер — по таймеру, не дожидаясь картинки
+  <script>
+  // Прелоадер — по таймеру
   setTimeout(() => {
     document.getElementById('preloader').classList.add('hide');
     document.body.classList.add('loaded');
@@ -143,6 +411,61 @@
       hideTimer = setTimeout(() => box.classList.remove('show'), 5000);
     });
   });
+
+  // Навигация
+  document.querySelectorAll('#menu button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#menu button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Досье
+  const modal    = document.getElementById('dossier-modal');
+  const imgEl    = document.getElementById('dossier-img');
+  const nameEl   = document.getElementById('dossier-name');
+  const fileEl   = document.getElementById('dossier-file');
+  const textEl   = document.getElementById('dossier-text');
+
+  document.querySelectorAll('.dossier-card').forEach(card => {
+    card.addEventListener('click', () => {
+      imgEl.src        = card.dataset.portrait;
+      imgEl.alt        = card.dataset.name;
+      nameEl.textContent = card.dataset.name;
+      fileEl.textContent = card.dataset.file || '';
+      textEl.textContent = card.dataset.text || 'Текст досье ещё не написан.';
+
+      // перезапуск анимаций
+      modal.classList.remove('show');
+      void modal.offsetWidth;
+      modal.classList.add('show');
+    });
+  });
+
+  function closeModal() { modal.classList.remove('show'); }
+  document.getElementById('dossier-close').addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+  // ===== СПИСОК ГЛАВ =====
+  const chapters = [
+    // "data/chapters/chapter-01.html",
+  ];
+
+  // ===== СПИСОК ПЕРСОНАЖЕЙ =====
+  const characters = [
+    // { name: "...", file: "...", portrait: "...", stamp: "..." },
+  ];
+
+  // --- функции loadChapters, loadCharacters, showPlaceholder ---
+  // (вставить код из пункта 2)
+
+  // ВЫЗОВЫ
+  loadChapters();
+  loadCharacters();
+  attachSecrets();
 </script>
 </body>
 </html>
