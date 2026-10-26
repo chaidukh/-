@@ -375,27 +375,27 @@
   <img src="rose.png" alt="">
 </div>
 <script>
-  // Прелоадер — по таймеру
+// Прелоадер
   setTimeout(() => {
     document.getElementById('preloader').classList.add('hide');
     document.body.classList.add('loaded');
   }, 1800);
 
- // Пасхалки
-function attachSecrets() {
-  const box = document.getElementById('secret-box');
-  let hideTimer;
-  document.querySelectorAll('.secret:not(.bound)').forEach(el => {
-    el.classList.add('bound');
-    el.addEventListener('click', () => {
-      box.textContent = el.dataset.secret;
-      box.classList.add('show');
-      el.classList.add('found');
-      clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => box.classList.remove('show'), 5000);
+  // Пасхалки
+  function attachSecrets() {
+    const box = document.getElementById('secret-box');
+    let hideTimer;
+    document.querySelectorAll('.secret:not(.bound)').forEach(el => {
+      el.classList.add('bound');
+      el.addEventListener('click', () => {
+        box.textContent = el.dataset.secret;
+        box.classList.add('show');
+        el.classList.add('found');
+        clearTimeout(hideTimer);
+        hideTimer = setTimeout(() => box.classList.remove('show'), 5000);
+      });
     });
-  });
-}
+  }
 
   // Навигация
   document.querySelectorAll('#menu button').forEach(btn => {
@@ -409,83 +409,91 @@ function attachSecrets() {
   });
 
   // Досье
-  const modal    = document.getElementById('dossier-modal');
-  const imgEl    = document.getElementById('dossier-img');
-  const nameEl   = document.getElementById('dossier-name');
-  const fileEl   = document.getElementById('dossier-file');
-  const textEl   = document.getElementById('dossier-text');
+  const modal  = document.getElementById('dossier-modal');
+  const imgEl  = document.getElementById('dossier-img');
+  const nameEl = document.getElementById('dossier-name');
+  const fileEl = document.getElementById('dossier-file');
+  const textEl = document.getElementById('dossier-text');
 
-  document.querySelectorAll('.dossier-card').forEach(card => {
-    card.addEventListener('click', () => {
-      imgEl.src        = card.dataset.portrait;
-      imgEl.alt        = card.dataset.name;
-      nameEl.textContent = card.dataset.name;
-      fileEl.textContent = card.dataset.file || '';
-      textEl.textContent = card.dataset.text || 'Текст досье ещё не написан.';
-
-      // перезапуск анимаций
-      modal.classList.remove('show');
-      void modal.offsetWidth;
-      modal.classList.add('show');
-    });
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.dossier-card');
+    if (!card) return;
+    imgEl.src = card.dataset.portrait;
+    imgEl.alt = card.dataset.name;
+    nameEl.textContent = card.dataset.name;
+    fileEl.textContent = card.dataset.file || '';
+    textEl.textContent = card.dataset.text || 'Текст досье ещё не написан.';
+    modal.classList.remove('show');
+    void modal.offsetWidth;
+    modal.classList.add('show');
   });
 
   function closeModal() { modal.classList.remove('show'); }
   document.getElementById('dossier-close').addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  // ===== СПИСОК ГЛАВ =====
+
+  // Списки
   const chapters = [
     "data/chapters/chapter-01.html",
   ];
-
-  // ===== СПИСОК ПЕРСОНАЖЕЙ =====
   const characters = [
     // { name: "...", file: "...", portrait: "...", stamp: "..." },
   ];
 
- async function loadChapters() {
-  const box = document.getElementById('chapters-container');
-  box.innerHTML = '';
-  if (chapters.length === 0) {
-    showPlaceholder(box, 'Главы ещё не написаны. Первая появится здесь.');
-    return;
+  // Заглушка
+  function showPlaceholder(container, text) {
+    const tag = container.tagName === 'UL' ? 'li' : 'div';
+    const el = document.createElement(tag);
+    el.className = 'placeholder';
+    el.textContent = text;
+    container.appendChild(el);
   }
-  let loaded = 0;
-  for (const path of chapters) {
-    try {
-      const res = await fetch(path);
-      if (!res.ok) throw new Error(res.status);
-      const div = document.createElement('div');
-      div.className = 'chapter';
-      div.innerHTML = await res.text();
-      box.appendChild(div);
-      loaded++;
-    } catch (e) { console.warn('Не загрузилась глава:', path, e); }
-  }
-  if (loaded === 0) showPlaceholder(box, 'Главы не найдены. Проверь пути к файлам.');
-  attachSecrets();
-}
 
-function loadCharacters() {
-  const box = document.getElementById('characters-container');
-  box.innerHTML = '';
-  if (characters.length === 0) {
-    showPlaceholder(box, 'Досье ещё не открыты.');
-    return;
+  // Главы
+  async function loadChapters() {
+    const box = document.getElementById('chapters-container');
+    box.innerHTML = '';
+    if (chapters.length === 0) {
+      showPlaceholder(box, 'Главы ещё не написаны. Первая появится здесь.');
+      return;
+    }
+    let loaded = 0;
+    for (const path of chapters) {
+      try {
+        const res = await fetch(path);
+        if (!res.ok) throw new Error(res.status);
+        const div = document.createElement('div');
+        div.className = 'chapter';
+        div.innerHTML = await res.text();
+        box.appendChild(div);
+        loaded++;
+      } catch (e) { console.warn('Не загрузилась глава:', path, e); }
+    }
+    if (loaded === 0) showPlaceholder(box, 'Главы не найдены. Проверь пути к файлам.');
+    attachSecrets();
   }
-  for (const c of characters) {
-    const btn = document.createElement('button');
-    btn.className = 'dossier-card';
-    btn.dataset.name = c.name;
-    btn.dataset.portrait = c.portrait;
-    btn.dataset.file = c.stamp || '';
-    btn.dataset.fileHtml = c.file || '';
-    btn.innerHTML = '<span class="card-name">' + c.name + '</span><span class="card-hint">досье</span>';
-    box.appendChild(btn);
+
+  // Персонажи
+  function loadCharacters() {
+    const box = document.getElementById('characters-container');
+    box.innerHTML = '';
+    if (characters.length === 0) {
+      showPlaceholder(box, 'Досье ещё не открыты.');
+      return;
+    }
+    for (const c of characters) {
+      const btn = document.createElement('button');
+      btn.className = 'dossier-card';
+      btn.dataset.name = c.name;
+      btn.dataset.portrait = c.portrait;
+      btn.dataset.file = c.stamp || '';
+      btn.innerHTML = '<span class="card-name">' + c.name + '</span><span class="card-hint">досье</span>';
+      box.appendChild(btn);
+    }
   }
-}
-  // ВЫЗОВЫ
+
+  // Вызовы
   loadChapters();
   loadCharacters();
   attachSecrets();
