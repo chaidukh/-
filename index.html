@@ -624,7 +624,7 @@ async function loadChapters() {
     const box = document.getElementById('characters-container');
     box.innerHTML = '';
     if (characters.length === 0) {
-      showPlaceholder(box, 'Досье ещё не открыты.');
+      showPlaceholder(box, 'может быть когда-нибудь');
       return;
     }
     for (const c of characters) {
