@@ -108,10 +108,6 @@
 </head>
 <body>
 
-<div id="preloader">
-  <img src="rose.jpg" alt="">
-</div>
-
 <main>
   <h1>добро пожаловать,дорогой читатель</h1>
   <div class="chapter">
@@ -129,14 +125,11 @@
   <img src="rose.png" alt="">
 </div>
 <script>
-  // Прелоадер
-  window.addEventListener('load', () => {
-    const pre = document.getElementById('preloader');
-    setTimeout(() => {
-      pre.classList.add('hide');
-      document.body.classList.add('loaded');
-    }, 1800); // роза висит 1.8 сек — настрой под себя
-  });
+  // Прелоадер — по таймеру, не дожидаясь картинки
+  setTimeout(() => {
+    document.getElementById('preloader').classList.add('hide');
+    document.body.classList.add('loaded');
+  }, 1800);
 
   // Пасхалки
   const box = document.getElementById('secret-box');
@@ -151,6 +144,5 @@
     });
   });
 </script>
-
 </body>
 </html>
