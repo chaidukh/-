@@ -30,15 +30,16 @@
 
   /* --- Прелоадер с розой --- */
   #preloader {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    transition: opacity 1s ease;
-  }
+     position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 1s ease;
+  isolation: isolate;
+}
   #preloader.hide { opacity: 0; pointer-events: none; }
   #preloader img {
     width: 180px;
@@ -531,7 +532,7 @@
   setTimeout(() => {
     document.getElementById('preloader').classList.add('hide');
     document.body.classList.add('loaded');
-  }, 1800);
+  }, 3500);
 
   // Пасхалки
   function attachSecrets() {
