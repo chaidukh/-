@@ -309,6 +309,96 @@
   #dossier-close:hover { color: var(--accent); }
 
   /* Адаптив */
+  /* ===== Список глав ===== */
+  .chapter-list {
+    list-style: none;
+    margin-top: 2rem;
+    border-top: 1px solid #241c26;
+  }
+  .chapter-list li {
+    border-bottom: 1px solid #241c26;
+  }
+  .chapter-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1.2rem;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 1.05rem;
+    text-align: left;
+    padding: 1rem 0.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .chapter-link:hover {
+    color: var(--accent);
+    padding-left: 1rem;
+  }
+  .chapter-index {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--dim);
+    min-width: 2.2em;
+  }
+  .chapter-title { letter-spacing: 0.05em; }
+
+  /* ===== Модалка главы ===== */
+  #chapter-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,4,6,0.92);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 200;
+  }
+  #chapter-modal.show { opacity: 1; pointer-events: auto; }
+  .chapter-sheet {
+    position: relative;
+    background: #1a141b;
+    border: 1px solid #2c212e;
+    max-width: 680px;
+    width: 100%;
+    max-height: 85vh;
+    overflow: auto;
+    padding: 2.5rem 2rem;
+    transform: scale(0.96);
+    transition: transform 0.5s ease;
+  }
+  #chapter-modal.show .chapter-sheet { transform: scale(1); }
+  .chapter-sheet h2 {
+    font-size: 1.2rem;
+    font-weight: normal;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 1.8rem;
+    text-align: center;
+  }
+  .chapter-body {
+    font-size: 1.02rem;
+    line-height: 2;
+    white-space: pre-line;
+    color: var(--ink);
+  }
+  #chapter-close {
+    position: absolute;
+    top: 0.6rem; right: 0.9rem;
+    background: none; border: none;
+    color: var(--dim);
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  #chapter-close:hover { color: var(--accent); }
   @media (max-width: 620px) {
     #menu { gap: 1rem; }
     #menu button { font-size: 0.7rem; letter-spacing: 0.15em; }
@@ -365,6 +455,14 @@
       <div class="dossier-text" id="dossier-text"></div>
     </div>
     <button id="dossier-close" aria-label="закрыть">×</button>
+  </div>
+</div>
+  <!-- ===== МОДАЛКА ГЛАВЫ ===== -->
+<div id="chapter-modal">
+  <div class="chapter-sheet">
+    <button id="chapter-close" aria-label="закрыть">×</button>
+    <h2 id="chapter-modal-title"></h2>
+    <div class="chapter-body" id="chapter-modal-body"></div>
   </div>
 </div>
 </main>
@@ -434,8 +532,8 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   // Списки
-  const chapters = [
-    "data/chapters/chapter-01.html",
+const chapters = [
+  { title: "Глава I", file: "data/chapters/chapter-01.html" },
   ];
   const characters = [
     // { name: "...", file: "...", portrait: "...", stamp: "..." },
@@ -451,28 +549,33 @@
   }
 
   // Главы
-  async function loadChapters() {
-    const box = document.getElementById('chapters-container');
-    box.innerHTML = '';
-    if (chapters.length === 0) {
-      showPlaceholder(box, 'Главы ещё не написаны. Первая появится здесь.');
-      return;
-    }
-    let loaded = 0;
-    for (const path of chapters) {
-      try {
-        const res = await fetch(path);
-        if (!res.ok) throw new Error(res.status);
-        const div = document.createElement('div');
-        div.className = 'chapter';
-        div.innerHTML = await res.text();
-        box.appendChild(div);
-        loaded++;
-      } catch (e) { console.warn('Не загрузилась глава:', path, e); }
-    }
-    if (loaded === 0) showPlaceholder(box, 'Главы не найдены. Проверь пути к файлам.');
-    attachSecrets();
+async function loadChapters() {
+  const box = document.getElementById('chapters-container');
+  box.innerHTML = '';
+
+  if (chapters.length === 0) {
+    showPlaceholder(box, 'Главы ещё не написаны. Первая появится здесь.');
+    return;
   }
+
+  const list = document.createElement('ul');
+  list.className = 'chapter-list';
+
+  chapters.forEach((ch, i) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'chapter-link';
+    btn.dataset.file = ch.file;
+    btn.dataset.title = ch.title;
+    btn.innerHTML =
+      '<span class="chapter-index">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="chapter-title">' + ch.title + '</span>';
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  box.appendChild(list);
+}
 
   // Персонажи
   function loadCharacters() {
@@ -493,6 +596,42 @@
     }
   }
 
+  // Открытие главы
+  const chapModal = document.getElementById('chapter-modal');
+  const chapTitle = document.getElementById('chapter-modal-title');
+  const chapBody  = document.getElementById('chapter-modal-body');
+
+  document.addEventListener('click', async (e) => {
+    const link = e.target.closest('.chapter-link');
+    if (!link) return;
+
+    chapTitle.textContent = link.dataset.title;
+    chapBody.innerHTML = '<em>загрузка...</em>';
+    chapModal.classList.remove('show');
+    void chapModal.offsetWidth;
+    chapModal.classList.add('show');
+
+    try {
+      const res = await fetch(link.dataset.file);
+      if (!res.ok) throw new Error(res.status);
+      chapBody.innerHTML = await res.text();
+      attachSecrets();
+    } catch (err) {
+      chapBody.textContent = 'Не удалось загрузить главу.';
+      console.warn(err);
+    }
+  });
+
+  document.getElementById('chapter-close').addEventListener('click', () => {
+    chapModal.classList.remove('show');
+  });
+  chapModal.addEventListener('click', e => {
+    if (e.target === chapModal) chapModal.classList.remove('show');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') chapModal.classList.remove('show');
+  });
+  
   // Вызовы
   loadChapters();
   loadCharacters();
