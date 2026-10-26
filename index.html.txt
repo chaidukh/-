@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>...</title>
+<style>
+  :root {
+    --bg: #0d0b0e;
+    --ink: #cfc6c9;
+    --dim: #6b6166;
+    --accent: #8b1e2d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  body.loaded { opacity: 1; }
+
+  /* --- Прелоадер с розой --- */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 1s ease;
+  }
+  #preloader.hide { opacity: 0; pointer-events: none; }
+  #preloader img {
+    width: 180px;
+    filter: grayscale(40%) brightness(0.9);
+    animation: breathe 3s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.5; transform: scale(0.98); }
+    50%      { opacity: 1;   transform: scale(1.02); }
+  }
+
+  /* --- Контент --- */
+  main {
+    max-width: 640px;
+    width: 100%;
+  }
+  h1 {
+    font-size: 1.4rem;
+    font-weight: normal;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  .chapter {
+    font-size: 1.05rem;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+
+  /* --- Пасхалки --- */
+  .secret {
+    color: inherit;
+    cursor: pointer;
+    transition: color 0.4s ease;
+    /* никакого подчёркивания — незаметно */
+  }
+  .secret:hover { color: var(--accent); }
+  .secret.found {
+    color: var(--accent);
+    text-shadow: 0 0 12px rgba(139, 30, 45, 0.6);
+  }
+
+  /* Скрытая всплывашка */
+  #secret-box {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translate(-50%, 2rem);
+    background: #141016;
+    border: 1px solid var(--accent);
+    padding: 1rem 1.5rem;
+    font-style: italic;
+    color: var(--ink);
+    max-width: 90%;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s ease;
+    font-size: 0.95rem;
+  }
+  #secret-box.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <img src="rose.jpg" alt="">
+</div>
+
+<main>
+  <h1>Имя Героя</h1>
+  <div class="chapter">
+    Первый абзац истории. Здесь всё начинается.
+    А вот <span class="secret" data-secret="Она вернулась не в тот вечер. Она вернулась на три года раньше.">одно слово</span> в этом предложении — не то, чем кажется.
+
+    Второй абзац. Обычный текст, тишина, ожидание.
+    А <span class="secret" data-secret="Часы в прихожей всегда отставали на минуту. Он так и не починил их.">здесь</span> спрятано ещё кое-что.
+  </div>
+</main>
+
+<div id="secret-box"></div>
+
+<script>
+  // Прелоадер
+  window.addEventListener('load', () => {
+    const pre = document.getElementById('preloader');
+    setTimeout(() => {
+      pre.classList.add('hide');
+      document.body.classList.add('loaded');
+    }, 1800); // роза висит 1.8 сек — настрой под себя
+  });
+
+  // Пасхалки
+  const box = document.getElementById('secret-box');
+  let hideTimer;
+  document.querySelectorAll('.secret').forEach(el => {
+    el.addEventListener('click', () => {
+      box.textContent = el.dataset.secret;
+      box.classList.add('show');
+      el.classList.add('found');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => box.classList.remove('show'), 5000);
+    });
+  });
+</script>
+
+</body>
+</html>
