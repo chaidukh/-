@@ -1,0 +1,259 @@
+<style>
+  .np-wrap {
+    font-family: 'Courier New', courier, monospace;
+    color: #000;
+    font-weight: 600;
+    line-height: 14px;
+    background-image: url('newspaper-assets/paper.png');
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #7f7754;
+    padding: 1.2rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 1400px;
+  }
+  .np-wrap * { box-sizing: border-box; }
+  .np-wrap hr {
+    border: none;
+    border-top: 2px solid #000;
+    margin: 4px 0;
+  }
+  .np-wrap .thick-4 { border-top-width: 4px; }
+  .np-wrap .thick-3 { border-top-width: 3px; }
+
+  .np-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .np-top {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .np-box {
+    border: 3px solid #000;
+    padding: 6px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 14px;
+    overflow: hidden;
+    height: 150px;
+  }
+  .np-box h3 {
+    font-size: 18px;
+    margin: 0 0 4px;
+    font-weight: normal;
+  }
+  .np-box.big-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: garamond, serif;
+    font-size: 48px;
+    line-height: 40px;
+  }
+  .np-body {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .np-col-right {
+    border-left: 2px solid #000;
+    padding-left: 10px;
+  }
+  .np-article-title {
+    font-family: garamond, serif;
+    font-size: 34px;
+    line-height: 30px;
+    margin: 8px 0 4px;
+  }
+  .np-article-title.small { font-size: 26px; line-height: 24px; }
+  .np-sub {
+    font-family: garamond, serif;
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .np-heading {
+    font-family: garamond, serif;
+    font-size: 18px;
+    display: block;
+    margin: 4px 0;
+  }
+  .np-text {
+    font-size: 12px;
+    line-height: 12px;
+    text-align: justify;
+  }
+  .np-text p { margin: 0 0 6px; }
+  .np-dropcap {
+    float: left;
+    font-size: 48px;
+    line-height: 40px;
+    font-family: garamond, serif;
+    font-weight: bold;
+    margin-right: 4px;
+    margin-top: 2px;
+  }
+  .np-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .np-lore {
+    border: 2px solid #000;
+    padding: 6px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 12px;
+    height: 180px;
+    overflow: hidden;
+  }
+  .np-lore h4 {
+    font-family: garamond, serif;
+    font-size: 18px;
+    margin: 0 0 4px;
+    font-weight: normal;
+  }
+  .np-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+</style>
+
+<div class="np-wrap">
+
+  <hr>
+  <div class="np-meta">
+    <span>Vol.4 No.13</span>
+    <span>★</span>
+    <span>SUNDAY, FEBRUARY 18th 1990</span>
+    <span>★</span>
+    <span>NEWSPAPER NAME</span>
+  </div>
+  <hr>
+  <br>
+  <hr class="thick-4">
+  <br>
+  <hr class="thick-3">
+
+  <div class="np-top">
+    <div class="np-box">
+      <h3>WEATHER FORECAST</h3>
+      <hr>
+      Погода или что угодно. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    </div>
+    <div class="np-box big-title">
+      NEWSPAPER TITLE HERE
+    </div>
+    <div class="np-box">
+      <h3>IDK IDK WRITE SMTH</h3>
+      <hr>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    </div>
+  </div>
+
+  <hr class="thick-3">
+  <br>
+  <hr class="thick-4">
+  <br><br>
+
+  <div class="np-body">
+
+    <!-- ЛЕВАЯ КОЛОНКА -->
+    <div>
+      <div class="np-article-title">ARTICLE 1# TITLE HERE</div>
+
+      <div class="np-two-col">
+        <div class="np-text">
+          <span class="np-sub">Напиши подзаголовок здесь, ок?</span>
+          <hr>
+          <span class="np-heading">SMALL HEADING HERE !!!</span>
+          <hr>
+          <p><span class="np-dropcap">A</span>rticle 1# text !!! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio. Donec accumsan tempor lacus, et venenatis elit feugiat non. Duis porta eros et velit blandit dapibus. Curabitur ac finibus eros.</p>
+          <p>Продолжение статьи. Duis placerat velit vitae massa sodales, eget mattis nibh pellentesque. Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div>
+          <div class="np-text" style="height: 300px; overflow: hidden;">
+            Продолжение здесь. Этот блок обрезается. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio.
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="np-article-title small">ARTICLE 3# TITLE HERE !!!</div>
+      <span class="np-sub">Напиши что-нибудь, брат...</span>
+      <hr>
+      <span class="np-heading">BREAKING NEWS ! !</span>
+      <hr>
+
+      <div class="np-two-col">
+        <div class="np-text" style="height: 400px; overflow: hidden;">
+          <p><span class="np-dropcap">L</span>orem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio. Donec accumsan tempor lacus, et venenatis elit feugiat non. Duis porta eros et velit blandit dapibus. Curabitur ac finibus eros.</p>
+          <p>Ещё текст. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div>
+          <div class="np-lore">
+            <h4>INSANE lore drop or wtv</h4>
+            <hr>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio.
+          </div>
+          <div class="np-text" style="height: 200px; overflow: hidden; margin-top: 6px;">
+            <span class="np-heading" style="font-weight: bold;">REMOVE THIS IF U DONT NEED</span>
+            Добавь текст сюда. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ПРАВАЯ КОЛОНКА -->
+    <div class="np-col-right">
+      <div class="np-article-title">ARTICLE 2# title KEEP THIS short</div>
+
+      <div class="np-two-col">
+        <div class="np-text" style="height: 600px; overflow: hidden;">
+          <span class="np-sub">Подзаголовок статьи 2. Это мило, мне нравится.</span>
+          <hr>
+          <p><span class="np-dropcap">B</span>eginning of article 2# text !! This is loooonggg. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio. Donec accumsan tempor lacus.</p>
+          <p>Продолжение. Duis porta eros et velit blandit dapibus. Curabitur ac finibus eros. Duis placerat velit vitae massa sodales, eget mattis nibh pellentesque.</p>
+        </div>
+        <div>
+          <div class="np-text" style="height: 400px; overflow: hidden;">
+            Продолжение статьи 2# здесь. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio.
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="np-article-title">ARTICLE 4# TITLE SOS BIG LETTERS.</div>
+      <hr>
+      <span class="np-sub">SOMETHING INSAAANEE HAPPENED NO WAY</span>
+      <hr>
+
+      <div class="np-two-col" style="margin-top: 6px;">
+        <div class="np-text" style="height: 450px; overflow: hidden;">
+          <p><span class="np-dropcap">W</span>rite till your fingers bleed. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio.</p>
+          <p>Ещё текст. Duis porta eros et velit blandit dapibus. Curabitur ac finibus eros.</p>
+        </div>
+        <div class="np-text" style="height: 450px; overflow: hidden;">
+          <p>Продолжение здесь. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sollicitudin elit sed tellus blandit viverra sed eget odio.</p>
+          <p>И ещё. Donec accumsan tempor lacus, et venenatis elit feugiat non.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="np-footer">
+    <span>©</span>
+    <span>1</span>
+  </div>
+</div>
