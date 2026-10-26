@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>...</title>
 <style>
+    /* PNG-досье внутри модалки */
+  .chapter-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
   :root {
     --bg: #0d0b0e;
     --ink: #cfc6c9;
@@ -590,7 +597,7 @@ const chapters = [
   { title: "ukfdf11",  file: "data/chapters/newspaper.html" },
   ];
   const characters = [
-    // { name: "...", file: "...", portrait: "...", stamp: "..." },
+   { name: "матвей", image: "data/characters/dossier-01.jpg" },
   ];
 
   // Заглушка
@@ -633,21 +640,32 @@ async function loadChapters() {
 
   // Персонажи
   function loadCharacters() {
-    const box = document.getElementById('characters-container');
-    box.innerHTML = '';
-    if (characters.length === 0) {
-      showPlaceholder(box, 'может быть когда-нибудь');
-      return;
-    }
-    for (const c of characters) {
-      const btn = document.createElement('button');
-      btn.className = 'dossier-card';
-      btn.dataset.name = c.name;
-      btn.dataset.portrait = c.portrait;
-      btn.dataset.file = c.stamp || '';
-      btn.innerHTML = '<span class="card-name">' + c.name + '</span><span class="card-hint">досье</span>';
-      box.appendChild(btn);
-    }
+  const box = document.getElementById('characters-container');
+  box.innerHTML = '';
+
+  if (characters.length === 0) {
+    showPlaceholder(box, 'Досье ещё не открыты.');
+    return;
+  }
+
+  const list = document.createElement('ul');
+  list.className = 'chapter-list';
+
+  characters.forEach((c, i) => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'chapter-link character-link';
+    btn.dataset.image = c.image;
+    btn.dataset.title = c.name;
+    btn.innerHTML =
+      '<span class="chapter-index">' + String(i + 1).padStart(2, '0') + '</span>' +
+      '<span class="chapter-title">' + c.name + '</span>';
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  box.appendChild(list);
+}
   }
 
   // Открытие главы
@@ -684,6 +702,38 @@ async function loadChapters() {
   });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') chapModal.classList.remove('show');
+  });
+   document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') chapModal.classList.remove('show');
+  });
+
+  // Открытие досье персонажа (PNG)
+  document.addEventListener('click', async (e) => {
+    const link = e.target.closest('.character-link');
+    if (!link) return;
+
+    chapTitle.textContent = link.dataset.title;
+    chapBody.innerHTML = '<em>загрузка...</em>';
+    chapModal.classList.remove('show');
+    void chapModal.offsetWidth;
+    chapModal.classList.add('show');
+
+    try {
+      const img = new Image();
+      img.src = link.dataset.image;
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = () => reject(new Error('404'));
+      });
+      chapBody.innerHTML = '';
+      chapBody.appendChild(img);
+      img.style.maxWidth = '100%';
+      img.style.display = 'block';
+      img.style.margin = '0 auto';
+    } catch (err) {
+      chapBody.textContent = 'Не удалось загрузить досье.';
+      console.warn(err);
+    }
   });
    // Клик по картинке на входе → переход к главам
   const homeImage = document.querySelector('.home-image');
