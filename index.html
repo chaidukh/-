@@ -399,6 +399,37 @@
     transition: color 0.3s ease;
   }
   #chapter-close:hover { color: var(--accent); }
+   /* ===== Главное ===== */
+  .home-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  .home-image {
+    cursor: pointer;
+    transition: transform 0.6s ease, filter 0.6s ease;
+    filter: grayscale(15%) brightness(0.95);
+    max-width: 420px;
+    width: 100%;
+  }
+  .home-image:hover {
+    transform: scale(1.02);
+    filter: grayscale(0%) brightness(1);
+  }
+  .home-image img {
+    width: 100%;
+    display: block;
+    border: 1px solid #2c212e;
+  }
+  .home-caption {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-style: italic;
+  }
   @media (max-width: 620px) {
     #menu { gap: 1rem; }
     #menu button { font-size: 0.7rem; letter-spacing: 0.15em; }
@@ -414,11 +445,22 @@
 
 <main>
  <nav id="menu">
+  <button data-tab="home" class="active">Главное</button>
   <button data-tab="characters">Персонажи</button>
   <button data-tab="chapters" class="active">Главы</button>
   <button data-tab="links">Ссылки</button>
 </nav>
 
+  <!-- ===== ГЛАВНОЕ ===== -->
+<section id="home" class="tab active">
+  <div class="home-wrap">
+    <div class="home-image">
+      <img src="main.jpg" alt="">
+    </div>
+    <p class="home-caption">нажми на изображение, чтобы войти</p>
+  </div>
+</section>
+  
   <!-- ===== ГЛАВЫ ===== -->
 <section id="chapters" class="tab active">
   <h1>Главы</h1>
@@ -631,7 +673,17 @@ async function loadChapters() {
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') chapModal.classList.remove('show');
   });
-  
+   // Клик по картинке на входе → переход к главам
+  const homeImage = document.querySelector('.home-image');
+  if (homeImage) {
+    homeImage.addEventListener('click', () => {
+      document.querySelectorAll('#menu button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('#menu button[data-tab="chapters"]').classList.add('active');
+      document.getElementById('chapters').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
   // Вызовы
   loadChapters();
   loadCharacters();
