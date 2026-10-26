@@ -383,12 +383,25 @@
     margin-bottom: 1.8rem;
     text-align: center;
   }
-  .chapter-body {
-    font-size: 1.02rem;
-    line-height: 2;
-    white-space: pre-line;
-    color: var(--ink);
+ .chapter-body {
+  font-size: 1.02rem;
+  line-height: 2;
+  white-space: pre-line;
+  color: var(--ink);
   }
+  /* Газета внутри модалки — не наследует стили главы */
+.chapter-body .np-wrap,
+.chapter-body .np-wrap * {
+  color: #000;
+  line-height: initial;
+  white-space: normal;
+  font-size: initial;
+}
+.chapter-body .np-wrap {
+  font-size: 12px;
+  line-height: 14px;
+  white-space: normal;
+}
   #chapter-close {
     position: absolute;
     top: 0.6rem; right: 0.9rem;
@@ -507,7 +520,6 @@
     <div class="chapter-body" id="chapter-modal-body"></div>
   </div>
 </div>
-</main>
 
 <div id="secret-box"></div>
 
